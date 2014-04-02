@@ -9,18 +9,18 @@ namespace TDIN_chatclient
     static class Program
     {
 
-        public static ChatController controller;
+        public static ChatController chatController = null;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            controller = new ChatController();
+            chatController = new ChatController();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+            Application.Run(new LoginForm(chatController));
         }
     }
 }

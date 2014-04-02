@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TDIN_chatclient
 {
-    public class LocalClient : MarshalByRefObject, LocalClientInterface
+    class LocalClient : MarshalByRefObject, LocalClientInterface
     {
 
         public LocalClient()

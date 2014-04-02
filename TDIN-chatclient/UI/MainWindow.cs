@@ -16,5 +16,14 @@ namespace TDIN_chatclient
         {
             InitializeComponent();
         }
+
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
+
+            Form f = new Form();
+            f.ShowDialog(this);
+
+        }
+
     }
 }

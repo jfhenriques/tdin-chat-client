@@ -17,11 +17,13 @@ namespace TDIN_chatclient
     {
 
         private TDIN_chatlib.IPAddress localAddress;
-        private string localClientHash;
+        private TDIN_chatlib.UserSession userSession;
         private TDIN_chatlib.ChatSeverInterface remoteServer;
 
         private const string SERVER_ADDRESS = "localhost";
         private const int SERVER_PORT = 8081;
+
+        private const string LOCAL_CHAT_SERVICE = "LocalChatObject";
 
 
         public ChatController()
@@ -62,21 +64,33 @@ namespace TDIN_chatclient
                                 new Uri(data.ChannelUris[0]).Port  // get the port
                             );
 
-            Console.WriteLine("a: " + localAddress.IP + ", p: " + localAddress.PORT);
+            //Console.WriteLine("a: " + localAddress.IP + ", p: " + localAddress.PORT);
 
-            RemotingConfiguration.RegisterWellKnownServiceType(typeof(LocalClient), "LocalChat", WellKnownObjectMode.Singleton);  // register a remote object for service
+
+            Console.WriteLine("* Registering Server Subscription Object");
+            RemotingConfiguration.RegisterWellKnownServiceType(typeof(UserSubscribe),
+                            TDIN_chatlib.Constants.CLIENT_SUBSCRIBE_SERVICE,
+                            WellKnownObjectMode.Singleton);
+
+            Console.WriteLine("* Registering Local Chat Object");
+            RemotingConfiguration.RegisterWellKnownServiceType(typeof(LocalClient),
+                            LOCAL_CHAT_SERVICE,
+                            WellKnownObjectMode.Singleton);
         }
 
-        public void registerWithServer(string user, string password)
+        public void registerWithServer(TDIN_chatlib.LoginUser user)
         {
 
             string serverURL = "tcp://" + SERVER_ADDRESS + ":" + SERVER_PORT + "/" + TDIN_chatlib.Constants.SERVER_SERVICE;
 
-            // Create an instance of the remote object
-            remoteServer = (TDIN_chatlib.ChatSeverInterface)Activator.GetObject(
-                                        typeof(TDIN_chatlib.ChatSeverInterface), serverURL);
 
-            localClientHash = remoteServer.registerClient(localAddress, null, null);
+                // Create an instance of the remote object
+                remoteServer = (TDIN_chatlib.ChatSeverInterface)Activator.GetObject(
+                                            typeof(TDIN_chatlib.ChatSeverInterface), serverURL);
+
+                userSession = remoteServer.registerClient(localAddress, user);
+
+
         }
 
 
