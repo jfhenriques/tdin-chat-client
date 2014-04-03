@@ -10,7 +10,26 @@ namespace TDIN_chatclient
     {
         public void clientListUpdated()
         {
+            Console.WriteLine("* Received subscribed event: update Client list");
 
+        }
+
+        public string handshake(string sessionHash)
+        {
+            ChatController controller = ChatController.getController();
+
+            string uid = controller.UID;
+
+            if (controller.SessionHash == null)
+            {
+                controller.SessionHash = sessionHash;
+
+                Console.WriteLine("* Handshake uid: " + uid + ", hash: " + sessionHash);
+
+                return uid;
+            }
+
+            return null;
         }
     }
 }

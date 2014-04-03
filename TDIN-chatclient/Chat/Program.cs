@@ -16,7 +16,7 @@ namespace TDIN_chatclient
         [STAThread]
         static void Main()
         {
-            chatController = new ChatController();
+            chatController = ChatController.getController();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

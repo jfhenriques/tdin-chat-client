@@ -17,9 +17,25 @@ namespace TDIN_chatclient
     public class ChatController
     {
 
+        private static ChatController _singleton = null;
+
+        public static ChatController getController()
+        {
+            if( _singleton == null )
+                _singleton = new ChatController();
+
+            return _singleton;
+        }
+
+
+
+
         private TDIN_chatlib.IPAddress localAddress;
         private TDIN_chatlib.UserSession userSession;
         private TDIN_chatlib.ChatSeverInterface remoteServer;
+
+        private string _uid = Guid.NewGuid().ToString();
+        private string _handshakeSessionHash = null;
 
         private const string SERVER_ADDRESS = "localhost";
         private const int SERVER_PORT = 8081;
@@ -27,7 +43,7 @@ namespace TDIN_chatclient
         private const string LOCAL_CHAT_SERVICE = "LocalChatObject";
 
 
-        public ChatController()
+        private ChatController()
         {
 
             registerLocalClientServer();
@@ -91,7 +107,15 @@ namespace TDIN_chatclient
             remoteServer = (TDIN_chatlib.ChatSeverInterface)Activator.GetObject(
                                         typeof(TDIN_chatlib.ChatSeverInterface), serverURL);
 
-            userSession = remoteServer.registerClient(localAddress, user);
+            userSession = remoteServer.registerClient(_uid, localAddress, user);
+
+            if (    userSession.SessionHash == null
+                 || userSession.SessionHash != this._handshakeSessionHash )
+            {
+                this._handshakeSessionHash = null;
+
+                throw new TDIN_chatlib.ChatException("Received wrong session hash from handshake");
+            }
 
             return userSession != null ;
         }
@@ -105,6 +129,21 @@ namespace TDIN_chatclient
         public TDIN_chatlib.ChatSeverInterface RemoteServer
         {
             get { return this.remoteServer; }
+        }
+
+        public string UID
+        {
+            get { return this._uid; }
+        }
+
+        public string SessionHash
+        {
+            get { return this._handshakeSessionHash; }
+            set
+            {
+                if (this._handshakeSessionHash == null)
+                    this._handshakeSessionHash = value;
+            }
         }
 
 
