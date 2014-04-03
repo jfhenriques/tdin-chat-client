@@ -102,6 +102,11 @@ namespace TDIN_chatclient
             get { return this.userSession; }
         }
 
+        public TDIN_chatlib.ChatSeverInterface RemoteServer
+        {
+            get { return this.remoteServer; }
+        }
+
 
     }
 }

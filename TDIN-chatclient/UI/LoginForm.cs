@@ -105,6 +105,14 @@ namespace TDIN_chatclient
                     {
                         Console.WriteLine("Sucefully registered with server. session: " + chatController.Session.SessionHash);
                         this.statusLabel.Text = "Success!";
+
+                        IList<TDIN_chatlib.IPUser> userList = chatController.RemoteServer.getActiveClients();
+
+                        foreach (TDIN_chatlib.IPUser u in userList)
+                        {
+                            Console.WriteLine("n: " + u.Name + ", u: " +  u.Username);
+                        }
+
                     }
                     else
                     {
