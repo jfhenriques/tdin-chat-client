@@ -22,6 +22,7 @@ namespace TDIN_chatclient
             this.chatController = chatController;
             InitializeComponent();
             this.serverPort.Text = TDIN_chatlib.Constants.DEFAULT_SERVER_PORT.ToString();
+            this.serverHost.Text = "127.0.0.1";
 
             INIT_HEIGHT = this.Height;
 
@@ -53,7 +54,6 @@ namespace TDIN_chatclient
         }
 
 
-
         private void alertMessage(string msg)
         {
             MessageBox.Show(msg, "Error Title", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -61,7 +61,6 @@ namespace TDIN_chatclient
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             if (    this.serverHost.Text.Length == 0
                  || this.serverPort.Text.Length == 0 )
                 alertMessage("Host e a porta do servidor não preenchidos");
@@ -99,18 +98,30 @@ namespace TDIN_chatclient
                 {
                     TDIN_chatlib.LoginUser user = new TDIN_chatlib.LoginUser(this.username.Text, this.password.Text);
 
-                    if( this.isRegisto )
+                    if (this.isRegisto)
                         user.Name = this.nome.Text;
 
-                    chatController.registerWithServer(user);
+                    if (chatController.registerWithServer(this.serverHost.Text, this.serverPort.Text, user))
+                    {
+                        Console.WriteLine("Sucefully registered with server. session: " + chatController.Session.SessionHash);
+                        this.statusLabel.Text = "Success!";
+                    }
+                    else
+                    {
+                        this.statusLabel.Text = "Error registering with server!";
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
 
-                    this.Enabled = true;
                     this.statusLabel.Text = "Error connecting to server!";
                 }
+                finally {
+                    this.Enabled = true;
+                }
+  
             }
         }
 

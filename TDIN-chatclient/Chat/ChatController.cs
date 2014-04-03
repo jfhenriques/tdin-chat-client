@@ -10,6 +10,7 @@ using System.Runtime.Remoting.Channels.Tcp;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters;
 
 namespace TDIN_chatclient
 {
@@ -30,19 +31,21 @@ namespace TDIN_chatclient
         {
 
             registerLocalClientServer();
-            //registerWithServer();
         }
 
         private void registerLocalClientServer()
         {
+
+            //Creating a custom formatter for a TcpChannel sink chain. 
+            BinaryServerFormatterSinkProvider provider = new BinaryServerFormatterSinkProvider();
+            provider.TypeFilterLevel = TypeFilterLevel.Full;
+            //Creating the IDictionary to set the port on the channel instance. 
             IDictionary props = new Hashtable();
             props["port"] = 0;
-
-            BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider();
-            serverProvider.TypeFilterLevel = System.Runtime.Serialization.Formatters.TypeFilterLevel.Full;
-            BinaryClientFormatterSinkProvider clientProvider = new BinaryClientFormatterSinkProvider();
-            TcpChannel chan = new TcpChannel(props, clientProvider, serverProvider);  // instantiate the channel
-            ChannelServices.RegisterChannel(chan, false);                             // register the channel
+            //Pass the properties for the port setting and the server provider in the server chain argument. (Client remains null here.) 
+            TcpChannel chan = new TcpChannel(props, null, provider);
+            // register the channel
+            ChannelServices.RegisterChannel(chan, false);
 
             ChannelDataStore data = (ChannelDataStore)chan.ChannelData;
 
@@ -78,10 +81,10 @@ namespace TDIN_chatclient
                             WellKnownObjectMode.Singleton);
         }
 
-        public bool registerWithServer(TDIN_chatlib.LoginUser user)
+        public bool registerWithServer(string host, string port, TDIN_chatlib.LoginUser user)
         {
 
-            string serverURL = "tcp://" + SERVER_ADDRESS + ":" + SERVER_PORT + "/" + TDIN_chatlib.Constants.SERVER_SERVICE;
+            string serverURL = "tcp://" + host + ":" + port + "/" + TDIN_chatlib.Constants.SERVER_SERVICE;
 
 
             // Create an instance of the remote object
@@ -91,6 +94,12 @@ namespace TDIN_chatclient
             userSession = remoteServer.registerClient(localAddress, user);
 
             return userSession != null ;
+        }
+
+
+        public TDIN_chatlib.UserSession Session
+        {
+            get { return this.userSession; }
         }
 
 
