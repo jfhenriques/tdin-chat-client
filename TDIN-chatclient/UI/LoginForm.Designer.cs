@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.connectButton = new System.Windows.Forms.Button();
             this.serverPort = new System.Windows.Forms.TextBox();
             this.serverPortLabel = new System.Windows.Forms.Label();
             this.serverHost = new System.Windows.Forms.TextBox();
@@ -44,21 +44,21 @@
             this.nomeLabel = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.confPass = new System.Windows.Forms.TextBox();
-            this.confPassLabel = new System.Windows.Forms.Label();
+            this.passwordConf = new System.Windows.Forms.TextBox();
+            this.passwordConfLabel = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // button1
+            // connectButton
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(73, 252);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(199, 23);
-            this.button1.TabIndex = 50;
-            this.button1.Text = "Conectar";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.connectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.connectButton.Location = new System.Drawing.Point(73, 252);
+            this.connectButton.Name = "connectButton";
+            this.connectButton.Size = new System.Drawing.Size(199, 23);
+            this.connectButton.TabIndex = 50;
+            this.connectButton.Text = "Conectar";
+            this.connectButton.UseVisualStyleBackColor = true;
+            this.connectButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // serverPort
             // 
@@ -194,30 +194,31 @@
             this.statusLabel.Size = new System.Drawing.Size(39, 17);
             this.statusLabel.Text = "Ready";
             // 
-            // confPass
+            // passwordConf
             // 
-            this.confPass.Location = new System.Drawing.Point(73, 194);
-            this.confPass.Name = "confPass";
-            this.confPass.PasswordChar = '*';
-            this.confPass.Size = new System.Drawing.Size(199, 20);
-            this.confPass.TabIndex = 13;
+            this.passwordConf.Location = new System.Drawing.Point(73, 194);
+            this.passwordConf.Name = "passwordConf";
+            this.passwordConf.PasswordChar = '*';
+            this.passwordConf.Size = new System.Drawing.Size(199, 20);
+            this.passwordConf.TabIndex = 13;
             // 
-            // confPassLabel
+            // passwordConfLabel
             // 
-            this.confPassLabel.AutoSize = true;
-            this.confPassLabel.Location = new System.Drawing.Point(12, 197);
-            this.confPassLabel.Name = "confPassLabel";
-            this.confPassLabel.Size = new System.Drawing.Size(61, 13);
-            this.confPassLabel.TabIndex = 12;
-            this.confPassLabel.Text = "Conf. Pass.";
+            this.passwordConfLabel.AutoSize = true;
+            this.passwordConfLabel.Location = new System.Drawing.Point(12, 197);
+            this.passwordConfLabel.Name = "passwordConfLabel";
+            this.passwordConfLabel.Size = new System.Drawing.Size(61, 13);
+            this.passwordConfLabel.TabIndex = 12;
+            this.passwordConfLabel.Text = "Conf. Pass.";
             // 
             // LoginForm
             // 
+            this.AcceptButton = this.connectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 308);
-            this.Controls.Add(this.confPass);
-            this.Controls.Add(this.confPassLabel);
+            this.Controls.Add(this.passwordConf);
+            this.Controls.Add(this.passwordConfLabel);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.nomeLabel);
             this.Controls.Add(this.nome);
@@ -228,7 +229,7 @@
             this.Controls.Add(this.radioButtonRegisto);
             this.Controls.Add(this.radioButtonLogin);
             this.Controls.Add(this.titleLabel);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.connectButton);
             this.Controls.Add(this.serverPort);
             this.Controls.Add(this.serverPortLabel);
             this.Controls.Add(this.serverHost);
@@ -247,7 +248,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.TextBox serverPort;
         private System.Windows.Forms.Label serverPortLabel;
         private System.Windows.Forms.TextBox serverHost;
@@ -263,7 +264,7 @@
         private System.Windows.Forms.Label nomeLabel;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
-        private System.Windows.Forms.TextBox confPass;
-        private System.Windows.Forms.Label confPassLabel;
+        private System.Windows.Forms.TextBox passwordConf;
+        private System.Windows.Forms.Label passwordConfLabel;
     }
 }

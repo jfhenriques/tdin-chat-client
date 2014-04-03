@@ -78,19 +78,19 @@ namespace TDIN_chatclient
                             WellKnownObjectMode.Singleton);
         }
 
-        public void registerWithServer(TDIN_chatlib.LoginUser user)
+        public bool registerWithServer(TDIN_chatlib.LoginUser user)
         {
 
             string serverURL = "tcp://" + SERVER_ADDRESS + ":" + SERVER_PORT + "/" + TDIN_chatlib.Constants.SERVER_SERVICE;
 
 
-                // Create an instance of the remote object
-                remoteServer = (TDIN_chatlib.ChatSeverInterface)Activator.GetObject(
-                                            typeof(TDIN_chatlib.ChatSeverInterface), serverURL);
+            // Create an instance of the remote object
+            remoteServer = (TDIN_chatlib.ChatSeverInterface)Activator.GetObject(
+                                        typeof(TDIN_chatlib.ChatSeverInterface), serverURL);
 
-                userSession = remoteServer.registerClient(localAddress, user);
+            userSession = remoteServer.registerClient(localAddress, user);
 
-
+            return userSession != null ;
         }
 
 

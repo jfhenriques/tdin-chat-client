@@ -33,7 +33,7 @@ namespace TDIN_chatclient
         private void setRegisto(bool state)
         {
             this.isRegisto = state;
-            this.nomeLabel.Visible = this.nome.Visible = this.confPassLabel.Visible = this.confPass.Visible = state;
+            this.nomeLabel.Visible = this.nome.Visible = this.passwordConfLabel.Visible = this.passwordConf.Visible = state;
 
             if (this.isRegisto)
                 this.Height = INIT_HEIGHT;
@@ -52,27 +52,67 @@ namespace TDIN_chatclient
             setRegisto(true);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+
+        private void alertMessage(string msg)
         {
-            this.statusLabel.Text = "Connecting to server...";
-            this.Enabled = false;
-            this.Refresh();
-
-            try
-            {
-                chatController.registerWithServer(null);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-
-                this.Enabled = true;
-                this.statusLabel.Text = "Error connecting to server!";
-            }
-
-
+            MessageBox.Show(msg, "Error Title", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            if (    this.serverHost.Text.Length == 0
+                 || this.serverPort.Text.Length == 0 )
+                alertMessage("Host e a porta do servidor não preenchidos");
+
+            else
+            if (    this.username.Text.Length == 0
+                 || this.password.Text.Length == 0 )
+                alertMessage("Username e password têm de estar preenchidos");
+
+            else
+            if( this.username.Text.Length < 4 )
+                alertMessage("O username tem de ter no mínimo 4 caractéres");
+
+            else
+            if ( this.password.Text.Length < 4 )
+                alertMessage("A password tem de ter no mínimo 4 caractéres");
+
+            else
+            if(    this.isRegisto
+                && (    this.passwordConf.Text.Length == 0
+                     || this.nome.Text.Length == 0 ) )
+                alertMessage("Confirmação de password e nome têm de estar preenchidos");
+            else
+            if (    this.isRegisto
+                 && this.password.Text != this.passwordConf.Text )
+                alertMessage("Por favor repita correctamente a password no campo de confirmação");
+
+            else
+            {
+                this.statusLabel.Text = "Connecting to server...";
+                this.Enabled = false;
+                this.Refresh();
+
+                try
+                {
+                    TDIN_chatlib.LoginUser user = new TDIN_chatlib.LoginUser(this.username.Text, this.password.Text);
+
+                    if( this.isRegisto )
+                        user.Name = this.nome.Text;
+
+                    chatController.registerWithServer(user);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+
+                    this.Enabled = true;
+                    this.statusLabel.Text = "Error connecting to server!";
+                }
+            }
+        }
 
     }
 }
