@@ -34,6 +34,9 @@ namespace TDIN_chatclient
         private TDIN_chatlib.UserSession userSession;
         private TDIN_chatlib.ChatSeverInterface remoteServer;
 
+        private IList<TDIN_chatlib.IPUser> userList = null;
+
+
         private string _uid = Guid.NewGuid().ToString();
         private string _handshakeSessionHash = null;
 
@@ -120,6 +123,24 @@ namespace TDIN_chatclient
             return userSession != null ;
         }
 
+        public void updateClientList(long count)
+        {
+            if (remoteServer == null)
+                return;
+
+            userList = remoteServer.getActiveClients(count);
+
+            Console.WriteLine("* Received new client list, size: " + userList.Count + ", ref id: " + count);
+
+            if (Program.window != null)
+                Program.window.refreshCLientList(userList);
+        }
+
+        public void informServerExit()
+        {
+            remoteServer.disconnectClient(_handshakeSessionHash);
+        }
+
 
         public TDIN_chatlib.UserSession Session
         {
@@ -144,6 +165,11 @@ namespace TDIN_chatclient
                 if (this._handshakeSessionHash == null)
                     this._handshakeSessionHash = value;
             }
+        }
+
+        public IList<TDIN_chatlib.IPUser> UserList
+        {
+            get { return this.userList; }
         }
 
 

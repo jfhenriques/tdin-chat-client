@@ -10,6 +10,7 @@ namespace TDIN_chatclient
     {
 
         public static ChatController chatController = null;
+        public static MainWindow window = null;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -21,6 +22,12 @@ namespace TDIN_chatclient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new LoginForm(chatController));
+        }
+
+        public static void LaunchListWindow()
+        {
+
+            Application.Run(new MainWindow(chatController));
         }
     }
 }

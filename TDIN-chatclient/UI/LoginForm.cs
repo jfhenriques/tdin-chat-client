@@ -14,12 +14,12 @@ namespace TDIN_chatclient
     public partial class LoginForm : Form
     {
         private bool isRegisto = false;
-        private ChatController chatController;
+        private ChatController controller;
         private int INIT_HEIGHT;
 
         public LoginForm(ChatController chatController)
         {
-            this.chatController = chatController;
+            this.controller = chatController;
             InitializeComponent();
             this.serverPort.Text = TDIN_chatlib.Constants.DEFAULT_SERVER_PORT.ToString();
             this.serverHost.Text = "127.0.0.1";
@@ -94,6 +94,8 @@ namespace TDIN_chatclient
                 this.Enabled = false;
                 this.Refresh();
 
+                bool success = false;
+
                 try
                 {
                     TDIN_chatlib.LoginUser user = new TDIN_chatlib.LoginUser(this.username.Text, this.password.Text);
@@ -101,17 +103,20 @@ namespace TDIN_chatclient
                     if (this.isRegisto)
                         user.Name = this.nome.Text;
 
-                    if (chatController.registerWithServer(this.serverHost.Text, this.serverPort.Text, user))
+                    if (controller.registerWithServer(this.serverHost.Text, this.serverPort.Text, user))
                     {
-                        Console.WriteLine("Sucefully registered with server. session: " + chatController.Session.SessionHash);
+                        Console.WriteLine("Sucefully registered with server. session: " + controller.Session.SessionHash);
                         this.statusLabel.Text = "Success!";
 
-                        IList<TDIN_chatlib.IPUser> userList = chatController.RemoteServer.getActiveClients();
+                        success = true;
 
-                        foreach (TDIN_chatlib.IPUser u in userList)
-                        {
-                            Console.WriteLine("n: " + u.Name + ", u: " +  u.Username);
-                        }
+                        //IList<TDIN_chatlib.IPUser> userList = chatController.RemoteServer.getActiveClients();
+
+                        //foreach (TDIN_chatlib.IPUser u in userList)
+                        //{
+                        //    Console.WriteLine("n: " + u.Name + ", u: " +  u.Username);
+                        //}
+
 
                     }
                     else
@@ -127,7 +132,17 @@ namespace TDIN_chatclient
                     this.statusLabel.Text = "Error connecting to server!";
                 }
                 finally {
-                    this.Enabled = true;
+                   
+                    if (success)
+                    {
+                        Thread t = new Thread(Program.LaunchListWindow);
+                        t.TrySetApartmentState(ApartmentState.STA);
+                        t.Start();
+
+                        this.Dispose();
+                    }
+                    else
+                        this.Enabled = true;
                 }
   
             }

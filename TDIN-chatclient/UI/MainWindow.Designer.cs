@@ -28,22 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.userList = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
+            // 
+            // userList
+            // 
+            this.userList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.userList.FormattingEnabled = true;
+            this.userList.Location = new System.Drawing.Point(0, 0);
+            this.userList.Name = "userList";
+            this.userList.Size = new System.Drawing.Size(285, 563);
+            this.userList.TabIndex = 0;
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(284, 561);
+            this.Controls.Add(this.userList);
             this.Name = "MainWindow";
             this.Text = "ChatClient";
-            this.Load += new System.EventHandler(this.MainWindow_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.ListBox userList;
 
 
     }
