@@ -20,7 +20,7 @@ namespace TDIN_chatlib
         /// <param name="user">Em caso de registo os campos deverão estar todos preenchidos, em caso de login apenas é necessário o user e a password</param>
         /// <exception cref="ChatException">Em caso de não ser possível registar novo user ou password estiver errada</exception>
         /// <returns>Em caso de sucesso retorna um UserSession com todos os dados preenchidos, em caso de erro deve atirar uma excepção e retornar null</returns>
-        UserSession registerClient(string uid, InternalIPAddress address, LoginUser user);
+        UserSession registerClient(string uid, int port, LoginUser user);
 
 
 

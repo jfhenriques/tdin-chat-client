@@ -10,6 +10,7 @@ using System.Runtime.Remoting.Channels.Tcp;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Runtime.Remoting.Messaging;
 
 namespace TDIN_chatserver
 {
@@ -55,11 +56,11 @@ namespace TDIN_chatserver
         /// <param name="address"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public TDIN_chatlib.UserSession registerClient(string uid, TDIN_chatlib.InternalIPAddress address, TDIN_chatlib.LoginUser user)
+        public TDIN_chatlib.UserSession registerClient(string uid, int port, TDIN_chatlib.LoginUser user)
         {
             //TODO: Complete according with the interface specification.
 
-            if (uid.Length == 0 || address == null || user == null)
+            if (uid.Length == 0 || port < 1 || port > 65535 || user == null)
                 throw new TDIN_chatlib.ChatException("Badly constructed registration");
 
             if (!user.isValidLogin())
@@ -87,15 +88,20 @@ namespace TDIN_chatserver
             }
 
             // Create user and add it to active users.
-            TDIN_chatlib.IPUser ipUser = new TDIN_chatlib.IPUser(fromStore, address);
+            TDIN_chatlib.IPUser ipUser = new TDIN_chatlib.IPUser(fromStore);
             TDIN_chatlib.UserSession session = new TDIN_chatlib.UserSession(fromStore);
 
+            ipUser.IPAddress = new TDIN_chatlib.InternalIPAddress(
+                                            CallContext.GetData("ClientIPAddress").ToString(),
+                                            port);
             ipUser.UUID = session.UUID = fromStore.UUID;
             session.SessionHash = TDIN_chatlib.Utils.generateRandomHash();
 
+            //TDIN_chatlib.InternalIPAddress address
+
             try
             {
-                string url = "tcp://" + address.IP + ":" + address.PORT + "/" + TDIN_chatlib.Constants.CLIENT_SUBSCRIBE_SERVICE,
+                string url = "tcp://" + ipUser.IPAddress.IP + ":" + port + "/" + TDIN_chatlib.Constants.CLIENT_SUBSCRIBE_SERVICE,
                        handshakeUID;
 
                 TDIN_chatlib.UserSubscribeInterface usi = (TDIN_chatlib.UserSubscribeInterface)Activator.GetObject(

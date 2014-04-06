@@ -30,7 +30,7 @@ namespace TDIN_chatclient
 
 
 
-        private TDIN_chatlib.InternalIPAddress localAddress;
+        //private TDIN_chatlib.InternalIPAddress localAddress;
         private TDIN_chatlib.UserSession userSession;
         private TDIN_chatlib.ChatSeverInterface remoteServer;
 
@@ -52,15 +52,14 @@ namespace TDIN_chatclient
 
         public const string LOCAL_CHAT_SERVICE = "LocalChatObject";
 
+        private int MY_SERVICE_PORT = 0;
+
 
         private ChatController()
         {
 
             registerLocalClientServer();
         }
-
-
-
 
 
 
@@ -118,24 +117,25 @@ namespace TDIN_chatclient
             ChannelServices.RegisterChannel(chan, false);
 
             ChannelDataStore data = (ChannelDataStore)chan.ChannelData;
+            MY_SERVICE_PORT = new Uri(data.ChannelUris[0]).Port;
 
-            IPHostEntry IPHost = Dns.GetHostEntry(Dns.GetHostName());
-            string _ip = "127.0.0.1";
+            //IPHostEntry IPHost = Dns.GetHostEntry(Dns.GetHostName());
+            //string _ip = "127.0.0.1";
 
 
-            foreach(IPAddress ip in IPHost.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    _ip = ip.ToString();
-                    // yep, dont stop and grab the last one on the list
-                }
-            }
+            //foreach(IPAddress ip in IPHost.AddressList)
+            //{
+            //    if (ip.AddressFamily == AddressFamily.InterNetwork)
+            //    {
+            //        _ip = ip.ToString();
+            //        // yep, dont stop and grab the last one on the list
+            //    }
+            //}
 
-            localAddress = new TDIN_chatlib.InternalIPAddress(
-                                _ip, // get IP
-                                new Uri(data.ChannelUris[0]).Port  // get the port
-                            );
+            //localAddress = new TDIN_chatlib.InternalIPAddress(
+            //                    _ip, // get IP
+            //                    port // get the port
+            //                );
 
             //Console.WriteLine("a: " + localAddress.IP + ", p: " + localAddress.PORT);
 
@@ -151,17 +151,17 @@ namespace TDIN_chatclient
                             WellKnownObjectMode.Singleton);
         }
 
-        public bool registerWithServer(string host, string port, TDIN_chatlib.LoginUser user)
+        public bool registerWithServer(string host, int serverPort, TDIN_chatlib.LoginUser user)
         {
 
-            string serverURL = "tcp://" + host + ":" + port + "/" + TDIN_chatlib.Constants.SERVER_SERVICE;
+            string serverURL = "tcp://" + host + ":" + serverPort + "/" + TDIN_chatlib.Constants.SERVER_SERVICE;
 
 
             // Create an instance of the remote object
             remoteServer = (TDIN_chatlib.ChatSeverInterface)Activator.GetObject(
                                         typeof(TDIN_chatlib.ChatSeverInterface), serverURL);
 
-            userSession = remoteServer.registerClient(_session_uid, localAddress, user);
+            userSession = remoteServer.registerClient(_session_uid, MY_SERVICE_PORT, user);
 
             if (    userSession.SessionHash == null
                  || userSession.SessionHash != this._handshakeSessionHash )

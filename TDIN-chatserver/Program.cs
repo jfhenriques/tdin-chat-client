@@ -36,8 +36,11 @@ namespace TDIN_chatserver
             }
 
             //Creating a custom formatter for a TcpChannel sink chain. 
-            BinaryServerFormatterSinkProvider provider = new BinaryServerFormatterSinkProvider();
-            provider.TypeFilterLevel = TypeFilterLevel.Full;
+            BinaryServerFormatterSinkProvider providerNext = new BinaryServerFormatterSinkProvider();
+            providerNext.TypeFilterLevel = TypeFilterLevel.Full;
+
+            TDIN_chatlib.ClientIPServerSinkProvider provider = new TDIN_chatlib.ClientIPServerSinkProvider();
+            provider.Next = providerNext;
             //Creating the IDictionary to set the port on the channel instance. 
             IDictionary props = new Hashtable();
             props["port"] = TDIN_chatlib.Constants.DEFAULT_SERVER_PORT;

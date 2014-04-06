@@ -108,7 +108,7 @@ namespace TDIN_chatclient
                     if (this.isRegisto)
                         user.Name = this.nome.Text;
 
-                    if (controller.registerWithServer(this.serverHost.Text, this.serverPort.Text, user))
+                    if (controller.registerWithServer(this.serverHost.Text, Convert.ToInt32(this.serverPort.Text), user))
                     {
                         Console.WriteLine("Sucefully registered with server. session: " + controller.Session.SessionHash);
                         this.statusLabel.Text = "Success!";

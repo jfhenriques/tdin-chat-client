@@ -17,7 +17,6 @@ namespace TDIN_chatlib
             this._address = address;
         }
 
-
         public IPUser(string username, string name)
             : this(username, name, null)
         {
@@ -30,10 +29,16 @@ namespace TDIN_chatlib
                 this._address = new InternalIPAddress(address.IP, address.PORT);
         }
 
+        public IPUser(User user)
+            : base(user)
+        {
+        }
+
 
         public InternalIPAddress IPAddress
         {
             get { return this._address; }
+            set { this._address = value; }
         }
     }
 }
