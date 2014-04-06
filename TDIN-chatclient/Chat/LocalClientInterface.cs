@@ -8,8 +8,10 @@ namespace TDIN_chatclient
 {
     public interface LocalClientInterface
     {
-        bool startChat(TDIN_chatlib.IPAddress myAddress);
-        bool stopChat();
-        bool sendMessage(string msg);
+        string handshake(string sessionHash, string cuid);
+        string startChat(string sessionHash, string cuid, string uuid);
+        void stopChat(string sessionHash);
+        void sendMessage(string sessionHash, string msg);
+        bool checkAlive();
     }
 }

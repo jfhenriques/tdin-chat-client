@@ -109,15 +109,6 @@ namespace TDIN_chatclient
                         this.statusLabel.Text = "Success!";
 
                         success = true;
-
-                        //IList<TDIN_chatlib.IPUser> userList = chatController.RemoteServer.getActiveClients();
-
-                        //foreach (TDIN_chatlib.IPUser u in userList)
-                        //{
-                        //    Console.WriteLine("n: " + u.Name + ", u: " +  u.Username);
-                        //}
-
-
                     }
                     else
                     {

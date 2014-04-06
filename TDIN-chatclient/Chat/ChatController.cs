@@ -30,20 +30,27 @@ namespace TDIN_chatclient
 
 
 
-        private TDIN_chatlib.IPAddress localAddress;
+        private TDIN_chatlib.InternalIPAddress localAddress;
         private TDIN_chatlib.UserSession userSession;
         private TDIN_chatlib.ChatSeverInterface remoteServer;
 
+        private readonly object syncLock = new object();
+        public readonly object syncLockChat = new object();
+
         private IList<TDIN_chatlib.IPUser> userList = null;
 
+        private Dictionary<string, ChatWindow> activeChatsUUID = new Dictionary<string, ChatWindow>();
+        private Dictionary<string, ChatWindow> activeChatsSESSION = new Dictionary<string, ChatWindow>();
 
-        private string _uid = Guid.NewGuid().ToString();
+
+
+        private string _session_uid = Guid.NewGuid().ToString();
         private string _handshakeSessionHash = null;
 
         private const string SERVER_ADDRESS = "localhost";
         private const int SERVER_PORT = 8081;
 
-        private const string LOCAL_CHAT_SERVICE = "LocalChatObject";
+        public const string LOCAL_CHAT_SERVICE = "LocalChatObject";
 
 
         private ChatController()
@@ -52,12 +59,56 @@ namespace TDIN_chatclient
             registerLocalClientServer();
         }
 
+
+
+
+
+
+        public TDIN_chatlib.UserSession Session
+        {
+            get { return this.userSession; }
+        }
+
+        public TDIN_chatlib.ChatSeverInterface RemoteServer
+        {
+            get { return this.remoteServer; }
+        }
+
+        public string UID
+        {
+            get { return this._session_uid; }
+        }
+
+        public string SessionHash
+        {
+            get { return this._handshakeSessionHash; }
+            set
+            {
+                if (this._handshakeSessionHash == null)
+                    this._handshakeSessionHash = value;
+            }
+        }
+
+        public IList<TDIN_chatlib.IPUser> UserList
+        {
+            get { return this.userList; }
+        }
+
+
+
+
+
+
+
         private void registerLocalClientServer()
         {
 
             //Creating a custom formatter for a TcpChannel sink chain. 
-            BinaryServerFormatterSinkProvider provider = new BinaryServerFormatterSinkProvider();
-            provider.TypeFilterLevel = TypeFilterLevel.Full;
+            BinaryServerFormatterSinkProvider providerNext = new BinaryServerFormatterSinkProvider();
+            providerNext.TypeFilterLevel = TypeFilterLevel.Full;
+
+            TDIN_chatlib.ClientIPServerSinkProvider provider = new TDIN_chatlib.ClientIPServerSinkProvider();
+            provider.Next = providerNext;
             //Creating the IDictionary to set the port on the channel instance. 
             IDictionary props = new Hashtable();
             props["port"] = 0;
@@ -81,7 +132,7 @@ namespace TDIN_chatclient
                 }
             }
 
-            localAddress = new TDIN_chatlib.IPAddress(
+            localAddress = new TDIN_chatlib.InternalIPAddress(
                                 _ip, // get IP
                                 new Uri(data.ChannelUris[0]).Port  // get the port
                             );
@@ -110,7 +161,7 @@ namespace TDIN_chatclient
             remoteServer = (TDIN_chatlib.ChatSeverInterface)Activator.GetObject(
                                         typeof(TDIN_chatlib.ChatSeverInterface), serverURL);
 
-            userSession = remoteServer.registerClient(_uid, localAddress, user);
+            userSession = remoteServer.registerClient(_session_uid, localAddress, user);
 
             if (    userSession.SessionHash == null
                  || userSession.SessionHash != this._handshakeSessionHash )
@@ -128,7 +179,10 @@ namespace TDIN_chatclient
             if (remoteServer == null)
                 return;
 
-            userList = remoteServer.getActiveClients(count);
+            lock(syncLock)
+            {
+                userList = remoteServer.getActiveClients(count);
+            }
 
             Console.WriteLine("* Received new client list, size: " + userList.Count + ", ref id: " + count);
 
@@ -142,36 +196,107 @@ namespace TDIN_chatclient
         }
 
 
-        public TDIN_chatlib.UserSession Session
+
+
+        public void putChatSession(string sessionHash, ChatWindow chat)
         {
-            get { return this.userSession; }
+            activeChatsSESSION.Add(sessionHash, chat);
         }
 
-        public TDIN_chatlib.ChatSeverInterface RemoteServer
+        public void removeSession(string sessionHash, bool informClose)
         {
-            get { return this.remoteServer; }
-        }
+            if (sessionHash == null)
+                return;
 
-        public string UID
-        {
-            get { return this._uid; }
-        }
-
-        public string SessionHash
-        {
-            get { return this._handshakeSessionHash; }
-            set
+            lock(syncLock)
             {
-                if (this._handshakeSessionHash == null)
-                    this._handshakeSessionHash = value;
+                if (activeChatsSESSION.ContainsKey(sessionHash))
+                {
+                    activeChatsSESSION[sessionHash].SessionHash = null;
+
+                    if(informClose)
+                        activeChatsSESSION[sessionHash].AppendMsg("* The other user closed this chat or quit the aplication", System.Drawing.Color.Gray);
+
+                    activeChatsSESSION.Remove(sessionHash);
+                }
             }
         }
 
-        public IList<TDIN_chatlib.IPUser> UserList
+        public void removeUUID(string uuid, bool informClose)
         {
-            get { return this.userList; }
+            if (uuid == null)
+                return;
+
+            lock (syncLock)
+            {
+                if (activeChatsUUID.ContainsKey(uuid))
+                {
+                    removeSession(activeChatsUUID[uuid].SessionHash, informClose);
+
+
+                    activeChatsUUID.Remove(uuid);
+                }
+            }
         }
 
+
+        public ChatWindow requestChat(string sessionHash)
+        {
+            if (sessionHash == null)
+                return null;
+
+            lock (syncLock)
+            {
+                return activeChatsSESSION.ContainsKey(sessionHash) ? activeChatsSESSION[sessionHash] : null;
+            }
+        }
+
+        public ChatWindow getChatByUUID(string uuid)
+        {
+            if (uuid == null)
+                return null;
+
+            lock (syncLock)
+            {
+                if (activeChatsUUID.ContainsKey(uuid))
+                    return activeChatsUUID[uuid];
+            }
+
+            return null;
+        }
+
+
+        public ChatWindow createChat(string uuid, string forceIP)
+        {
+            if (uuid == null)
+                return null;
+
+            lock (syncLock)
+            {
+                if (getChatByUUID(uuid) != null)
+                    return null;
+
+                TDIN_chatlib.IPUser user = null;
+
+                foreach(var u in userList)
+                {
+                    if(u.UUID == uuid)
+                    {
+                        user = u;
+                        break;
+                    }
+                }
+
+                if( user == null )
+                    return null;
+
+                ChatWindow chat = new ChatWindow(user, forceIP);
+
+                activeChatsUUID.Add(uuid, chat);
+
+                return chat;
+            }
+        }
 
     }
 }
