@@ -67,6 +67,8 @@ namespace TDIN_chatclient
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            controller.closeAllChats();
+
             controller.informServerExit();
 
             base.OnFormClosing(e);
@@ -100,7 +102,8 @@ namespace TDIN_chatclient
 
                         if (chat != null)
                         {
-                            chat.Show(Program.window);
+                            //chat.Show(Program.window);
+                            chat._safeShow(true);
                             chat.AppendMsg("* starting conversation", System.Drawing.Color.Gray);
 
                             //chat.generateSessionHash();

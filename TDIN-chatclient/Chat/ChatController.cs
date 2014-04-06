@@ -192,7 +192,13 @@ namespace TDIN_chatclient
 
         public void informServerExit()
         {
-            remoteServer.disconnectClient(_handshakeSessionHash);
+            try
+            {
+                remoteServer.disconnectClient(_handshakeSessionHash);
+            }
+            catch (Exception e)
+            {
+            }
         }
 
 
@@ -263,6 +269,38 @@ namespace TDIN_chatclient
             }
 
             return null;
+        }
+
+
+        public void closeAllChats()
+        {
+            List<ChatWindow> wlist = new List<ChatWindow>();
+
+
+            foreach (ChatWindow chat in activeChatsUUID.Values)
+            {
+                wlist.Add(chat);
+            }
+
+            foreach (ChatWindow chat in wlist)
+            {
+                chat.Close();
+            }
+                //if (chat.SessionHash != null)
+                //{
+                //    try
+                //    {
+                //        chat.EndPointObject.stopChat(chat.SessionHash);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //    }
+
+                //    removeUUID(chat.User.UUID, false);
+
+                    
+                //}
+
         }
 
 

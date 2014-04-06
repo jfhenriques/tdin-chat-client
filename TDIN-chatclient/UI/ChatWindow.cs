@@ -21,6 +21,7 @@ namespace TDIN_chatclient
         private string _chatUID = null;
         private string _sessionHash = null;
         private string _endpointChatUID = null;
+        private bool _showCalled = false;
 
 
         public ChatWindow(TDIN_chatlib.IPUser user)
@@ -72,7 +73,17 @@ namespace TDIN_chatclient
         }
 
 
-
+        public void _safeShow(bool bring)
+        {
+            if (!_showCalled)
+            {
+                this.Show();
+                _showCalled = true;
+            }
+            
+            if( bring )
+                this.BringToFront();
+        }
 
         public void generateSessionHash()
         {
