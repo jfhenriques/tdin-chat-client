@@ -26,6 +26,8 @@ namespace TDIN_chatclient
             Program.window = this;
             this.controller = controller;
 
+            this.Text = controller.Session.DisplayName;
+
             _refreshList(controller.UserList);
         }
 
