@@ -10,20 +10,17 @@ namespace TDIN_chatlib
     public static class Utils
     {
 
-        public static string generateRandomHash()
+        public static string hashBytes(byte[] b)
         {
-            byte[] bytes = new byte[16],
-                   byteOut;
-            string hash = String.Empty;
+            if (b == null || b.Length == 0)
+                return null;
 
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(bytes);
-            }
+            string hash = String.Empty;
+            byte[] byteOut = null;
 
             using (var crypt = new SHA256Managed())
             {
-                byteOut = crypt.ComputeHash(bytes);
+                byteOut = crypt.ComputeHash(b);
             }
 
             foreach (byte bit in byteOut)
@@ -32,6 +29,19 @@ namespace TDIN_chatlib
             }
 
             return hash;
+
+        }
+
+        public static string generateRandomHash()
+        {
+            byte[] bytes = new byte[16];
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(bytes);
+            }
+
+            return hashBytes(bytes);
         }
     }
 }

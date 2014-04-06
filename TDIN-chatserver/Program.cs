@@ -17,9 +17,19 @@ namespace TDIN_chatserver
     class Program
     {
 
+        private const string USER_STORE_FILE = "UserStore.xml";
+        public static UserStore store = null;
 
         private static void registerServer()
         {
+
+            store = UserStore.loadStore(USER_STORE_FILE);
+
+            if (store == null)
+            {
+                store = UserStore.getNewStore();
+                //UserStore.saveStore(store, USER_STORE_FILE);
+            }
 
             //Creating a custom formatter for a TcpChannel sink chain. 
             BinaryServerFormatterSinkProvider provider = new BinaryServerFormatterSinkProvider();
@@ -44,6 +54,19 @@ namespace TDIN_chatserver
                                                                    WellKnownObjectMode.Singleton);
 
             System.Console.ReadLine();
+        }
+
+        public static bool addUser(TDIN_chatlib.LoginUser user)
+        {
+            if (user != null && user.Username != null)
+            {
+                store.userStore.Add(user.Username, user);
+                UserStore.saveStore(store, USER_STORE_FILE);
+
+                return true;
+            }
+
+            return false;
         }
 
 

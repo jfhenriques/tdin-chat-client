@@ -59,12 +59,42 @@ namespace TDIN_chatserver
         {
             //TODO: Complete according with the interface specification.
 
-            // Create user and add it to active users.
-            TDIN_chatlib.IPUser ipUser = new TDIN_chatlib.IPUser(user.Username, user.Name, address);
-            TDIN_chatlib.UserSession session = new TDIN_chatlib.UserSession(user.Username, user.Name, TDIN_chatlib.Utils.generateRandomHash());
+            if (uid.Length == 0 || address == null || user == null)
+                throw new TDIN_chatlib.ChatException("Badly constructed registration");
 
-            ipUser.generateUID();
-            session.UUID = ipUser.UUID;
+            if (!user.isValidLogin())
+                throw new TDIN_chatlib.ChatException("Please fill username and password");
+
+            TDIN_chatlib.LoginUser fromStore = Program.store.getUserByUsername(user.Username);
+
+            if (fromStore != null)
+            {
+                if (!fromStore.comparePassword(user))
+                    throw new TDIN_chatlib.ChatException("Invalid password for this username");
+
+                else
+                {
+
+                }
+            }
+            else
+            {
+                if (!user.isValidRegister())
+                    throw new TDIN_chatlib.ChatException("User not registered please fill a name for this user");
+
+                else
+                {
+                    fromStore = new TDIN_chatlib.LoginUser(user);
+                    fromStore.generateUID();
+                    Program.addUser(fromStore);
+                }
+            }
+
+            // Create user and add it to active users.
+            TDIN_chatlib.IPUser ipUser = new TDIN_chatlib.IPUser(fromStore.Username, fromStore.Name, address);
+            TDIN_chatlib.UserSession session = new TDIN_chatlib.UserSession(fromStore.Username, fromStore.Name, TDIN_chatlib.Utils.generateRandomHash());
+
+            ipUser.UUID = session.UUID = fromStore.UUID;
 
             // Mudei um pouco aqui as coisas, falta então fazeres a tua classe interna com toda a informação,
             // tipo base de dados, ou usares o LoginUser que até agora acho que tem tudo o que é preciso relativamente ao user (como se fosse para guardar na BD)

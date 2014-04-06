@@ -37,7 +37,11 @@ namespace TDIN_chatclient
             this.nomeLabel.Visible = this.nome.Visible = this.passwordConfLabel.Visible = this.passwordConf.Visible = state;
 
             if (this.isRegisto)
+            {
                 this.Height = INIT_HEIGHT;
+                this.nome.Text = "";
+                this.passwordConf.Text = "";
+            }
             else
                 this.Height -= 50;
         }
@@ -115,6 +119,10 @@ namespace TDIN_chatclient
                         this.statusLabel.Text = "Error registering with server!";
                     }
 
+                }
+                catch (TDIN_chatlib.ChatException ex1)
+                {
+                    this.statusLabel.Text = ex1.Message;
                 }
                 catch (Exception ex)
                 {

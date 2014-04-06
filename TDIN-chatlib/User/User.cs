@@ -15,21 +15,21 @@ namespace TDIN_chatlib
 
         public User(string username, string name)
         {
-            this._user = username;
-            this._name = name;
+            this.Username = username;
+            this.Name = name;
         }
 
         public string Username
         {
             get { return this._user; }
-            set { this._user = value; }
+            set { this._user = value == null ? null : value.Trim(); ; }
         }
 
 
         public string Name
         {
             get { return this._name; }
-            set { this._name = value; }
+            set { this._name = value == null ? null : value.Trim(); }
         }
 
         public string DisplayName
@@ -40,12 +40,12 @@ namespace TDIN_chatlib
         public string UUID
         {
             get { return this._uuid; }
-            set { this._uuid = value; }
+            set { this._uuid = value == null ? null : value.Trim(); }
         }
 
         public void generateUID()
         {
-            this._uuid = Guid.NewGuid().ToString();
+            this.UUID = Guid.NewGuid().ToString();
         }
 
     }
