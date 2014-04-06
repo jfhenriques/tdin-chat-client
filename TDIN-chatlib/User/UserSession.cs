@@ -23,6 +23,11 @@ namespace TDIN_chatlib
         {
         }
 
+        public UserSession(User user)
+            : base(user)
+        {
+        }
+
 
         public string SessionHash
         {

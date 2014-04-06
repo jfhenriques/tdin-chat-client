@@ -103,6 +103,7 @@ namespace TDIN_chatclient
                 try
                 {
                     TDIN_chatlib.LoginUser user = new TDIN_chatlib.LoginUser(this.username.Text, this.password.Text);
+                    user.hashPassword();
 
                     if (this.isRegisto)
                         user.Name = this.nome.Text;

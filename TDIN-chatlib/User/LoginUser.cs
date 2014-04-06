@@ -30,24 +30,23 @@ namespace TDIN_chatlib
         }
 
         public LoginUser(LoginUser user)
-            : this(null, null, null)
+            : base(user)
         {
             if (user != null)
-            {
-                this.UUID = user.UUID;
-                this.Username = user.Username;
-                this.Name = user.Name;
                 this._pass = user.Pass;
-            }
         }
         public string Pass
         {
             get { return this._pass; }
-            set {
-                this._pass = (value == null || value.Trim().Length == 0)
-                                   ? null
-                                   : TDIN_chatlib.Utils.hashBytes(System.Text.Encoding.Unicode.GetBytes(value.Trim()));
-            }
+            set { this._pass = value;  }
+        }
+
+
+        public void hashPassword()
+        {
+            this._pass = (this._pass == null || this._pass.Trim().Length == 0)
+                               ? null
+                               : TDIN_chatlib.Utils.hashBytes(System.Text.Encoding.Unicode.GetBytes(this._pass.Trim()));
         }
 
 
@@ -66,7 +65,7 @@ namespace TDIN_chatlib
 
         public bool comparePassword(LoginUser user)
         {
-            return this._pass == user._pass;
+            return this._pass == user.Pass;
         }
     }
 }

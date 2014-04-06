@@ -25,8 +25,12 @@ namespace TDIN_chatserver
 
             store = UserStore.loadStore(USER_STORE_FILE);
 
-            if (store == null)
+            if (store != null)
+                Console.WriteLine("* Loaded " + store.userStore.Count + " users from store");
+
+            else
             {
+                Console.WriteLine("* No users loaded from file");
                 store = UserStore.getNewStore();
                 //UserStore.saveStore(store, USER_STORE_FILE);
             }

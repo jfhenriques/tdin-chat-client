@@ -23,6 +23,13 @@ namespace TDIN_chatlib
         {
         }
 
+        public IPUser(User user, InternalIPAddress address)
+            : base(user)
+        {
+            if (address != null)
+                this._address = new InternalIPAddress(address.IP, address.PORT);
+        }
+
 
         public InternalIPAddress IPAddress
         {

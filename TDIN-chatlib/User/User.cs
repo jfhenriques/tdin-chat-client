@@ -18,6 +18,18 @@ namespace TDIN_chatlib
             this.Username = username;
             this.Name = name;
         }
+        public User(User user)
+        {
+            if (user != null)
+            {
+                this._user = user.Username;
+                this._name = user.Name;
+                this._uuid = user.UUID;
+            }
+        }
+
+
+
 
         public string Username
         {

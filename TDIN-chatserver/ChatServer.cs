@@ -71,11 +71,6 @@ namespace TDIN_chatserver
             {
                 if (!fromStore.comparePassword(user))
                     throw new TDIN_chatlib.ChatException("Invalid password for this username");
-
-                else
-                {
-
-                }
             }
             else
             {
@@ -86,19 +81,18 @@ namespace TDIN_chatserver
                 {
                     fromStore = new TDIN_chatlib.LoginUser(user);
                     fromStore.generateUID();
+                    
                     Program.addUser(fromStore);
                 }
             }
 
             // Create user and add it to active users.
-            TDIN_chatlib.IPUser ipUser = new TDIN_chatlib.IPUser(fromStore.Username, fromStore.Name, address);
-            TDIN_chatlib.UserSession session = new TDIN_chatlib.UserSession(fromStore.Username, fromStore.Name, TDIN_chatlib.Utils.generateRandomHash());
+            TDIN_chatlib.IPUser ipUser = new TDIN_chatlib.IPUser(fromStore, address);
+            TDIN_chatlib.UserSession session = new TDIN_chatlib.UserSession(fromStore);
 
             ipUser.UUID = session.UUID = fromStore.UUID;
+            session.SessionHash = TDIN_chatlib.Utils.generateRandomHash();
 
-            // Mudei um pouco aqui as coisas, falta então fazeres a tua classe interna com toda a informação,
-            // tipo base de dados, ou usares o LoginUser que até agora acho que tem tudo o que é preciso relativamente ao user (como se fosse para guardar na BD)
-            //activeClients.Add(new_user);
             try
             {
                 string url = "tcp://" + address.IP + ":" + address.PORT + "/" + TDIN_chatlib.Constants.CLIENT_SUBSCRIBE_SERVICE,

@@ -55,7 +55,7 @@ namespace TDIN_chatserver
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Error: " + e.Message);
 
                 return null;
             }
@@ -92,7 +92,7 @@ namespace TDIN_chatserver
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Error: " + e.Message);
 
                 return false;
             }
