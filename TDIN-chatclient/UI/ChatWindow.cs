@@ -77,8 +77,13 @@ namespace TDIN_chatclient
         {
             if (!_showCalled)
             {
-                this.Show();
                 _showCalled = true;
+
+                //if (InvokeRequired)
+                    Program.window.Invoke((System.Windows.Forms.MethodInvoker)delegate() { this.Show(Program.window); });
+
+                //else
+                //    this.Show(Program.window);
             }
             
             if( bring )
@@ -122,7 +127,7 @@ namespace TDIN_chatclient
         {
             ChatController controller = ChatController.getController();
 
-            if (this._sessionHash != null )
+            if (this._sessionHash != null)
             {
                 try
                 {
@@ -131,9 +136,9 @@ namespace TDIN_chatclient
                 catch (Exception ex)
                 {
                 }
-
-                controller.removeUUID(this.user.UUID, false);
             }
+
+            controller.removeUUID(this.user.UUID, false);
             
             base.OnFormClosing(e);
         }

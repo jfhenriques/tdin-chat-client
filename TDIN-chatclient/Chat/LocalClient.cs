@@ -93,9 +93,7 @@ namespace TDIN_chatclient
                     chat.EndpointCUID = cuid;
                     controller.putChatSession(chat.SessionHash, chat);
 
-                    if (!chat.Visible)
-                        Program.window.Invoke((System.Windows.Forms.MethodInvoker)delegate() { chat._safeShow(false); });
-
+                    chat._safeShow(false);
                 }
                 catch (TDIN_chatlib.ChatException ex1)
                 {

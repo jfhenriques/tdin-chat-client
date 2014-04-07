@@ -17,6 +17,13 @@ namespace TDIN_chatlib
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        bool checkAlive();
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="sessionHash"></param>
         /// <returns></returns>
         string handshake(string sessionHash);

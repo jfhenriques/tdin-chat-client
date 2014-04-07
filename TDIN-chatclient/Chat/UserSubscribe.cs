@@ -12,6 +12,10 @@ namespace TDIN_chatclient
         private static ChatController controller = null;
 
 
+        public bool checkAlive()
+        {
+            return true;
+        }
 
         public void clientListUpdated(long count)
         {

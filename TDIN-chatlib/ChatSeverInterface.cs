@@ -24,6 +24,10 @@ namespace TDIN_chatlib
 
 
 
+        //bool updateUser(string sessionHash, LoginUser newInfo, string oldPass);
+
+
+
         /// <summary>Chamado pelo cliente quando se pretende desconectar do server</summary>
         /// <param name="hashCode">hash retornado pelo server em registerClient</param>
         void disconnectClient(string hashCode);

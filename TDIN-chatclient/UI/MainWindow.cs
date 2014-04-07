@@ -102,7 +102,6 @@ namespace TDIN_chatclient
 
                         if (chat != null)
                         {
-                            //chat.Show(Program.window);
                             chat._safeShow(true);
                             chat.AppendMsg("* starting conversation", System.Drawing.Color.Gray);
 
