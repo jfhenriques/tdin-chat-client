@@ -80,7 +80,7 @@ namespace TDIN_chatclient
                 _showCalled = true;
 
                 //if (InvokeRequired)
-                    Program.window.Invoke((System.Windows.Forms.MethodInvoker)delegate() { this.Show(Program.window); });
+                    Program.window.Invoke((System.Windows.Forms.MethodInvoker)delegate() { this.Show(); });
 
                 //else
                 //    this.Show(Program.window);
